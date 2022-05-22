@@ -21,6 +21,7 @@ passlib==1.7.4
 pyasn1==0.4.8
 pycparser==2.21
 pydantic==1.9.1
+pysqlite3==0.4.7
 python-dotenv==0.20.0
 python-jose==3.3.0
 python-multipart==0.0.5
