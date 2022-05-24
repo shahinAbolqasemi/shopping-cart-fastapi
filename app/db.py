@@ -67,5 +67,21 @@ def get_user(username):
     return UserInDB(username=user[0], hashed_password=user[1])
 
 
+def get_cart_item(username):
+    connection = sqlite3.connect('sqlite/db.sqlite3')
+    cursor = connection.cursor()
+    cursor.execute("""
+        SELECT product_id, count(*) FROM cart as c
+            join user as u
+            join product_cart as pc
+            on c.id = pc.cart_id and u.id = c.user_id
+            where username=?
+            group by pc.product_id
+    """, (username,))
+    cart_item = cursor.fetchall()
+    connection.close()
+    return list(cart_item)
+
+
 if __name__ == '__main__':
     init_db()
