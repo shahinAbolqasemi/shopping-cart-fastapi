@@ -1,5 +1,6 @@
-import sqlite3
 import pathlib
+import sqlite3
+
 from app.models import UserInDB
 from app.utils import get_logger
 
@@ -81,6 +82,30 @@ def get_cart_item(username):
     cart_item = cursor.fetchall()
     connection.close()
     return list(cart_item)
+
+
+def get_cart_by_username(username):
+    connection = sqlite3.connect('sqlite/db.sqlite3')
+    cursor = connection.cursor()
+    cursor.execute("""
+        SELECT id FROM cart
+        WHERE user_id = (SELECT id FROM user WHERE username = ?)
+    """, (username,))
+    cart = cursor.fetchone()
+    connection.close()
+    return {'id': cart[0]}
+
+
+def add_to_cart(product_id, cart_id):
+    connection = sqlite3.connect('sqlite/db.sqlite3')
+    cursor = connection.cursor()
+    cursor.execute("""
+        INSERT INTO product_cart (product_id, cart_id)
+        VALUES 
+            (?, ?)
+    """, (product_id, cart_id))
+    connection.commit()
+    connection.close()
 
 
 if __name__ == '__main__':
