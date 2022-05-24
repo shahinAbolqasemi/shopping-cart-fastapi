@@ -6,7 +6,6 @@ from typing import Union, Optional
 
 class OAuth2PasswordBearerCustom(OAuth2PasswordBearer):
     async def __call__(self, request: Request, token: Optional[str] = Query('')) -> Optional[str]:
-        print('token:', token)
         authorization: str = request.headers.get("Authorization")
         if not authorization:
             authorization = token
