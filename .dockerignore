@@ -1,0 +1,6 @@
+/persistency/
+/.git/
+/.gitignore
+/docker-compose.yml
+/venv/
+/sqlite/
