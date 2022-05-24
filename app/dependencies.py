@@ -1,11 +1,11 @@
-from fastapi import status, Depends, HTTPException, Path
-from app.db import get_user
-from jose import jwt, JWTError
-from app.models import TokenData, User
-from app.security.security import oauth2_scheme
-from app.config import get_settings
-from app.db import get_cart_item
 import aiohttp
+from fastapi import status, Depends, HTTPException
+from jose import jwt, JWTError
+
+from app.config import get_settings
+from app.db import get_user, get_cart_item, add_to_cart, get_cart_by_username
+from app.models import TokenData, User, CartItem
+from app.security.security import oauth2_scheme
 
 settings = get_settings()
 
@@ -52,3 +52,11 @@ async def get_cart_items_by_username(user: User = Depends(get_current_active_use
                         cart_items.append(product)
                         break
     return cart_items
+
+
+async def get_cart(user: User = Depends(get_current_active_user)):
+    return get_cart_by_username(user.username)
+
+
+async def add_item_to_cart(product_id: CartItem, cart: dict = Depends(get_cart)):
+    add_to_cart(product_id.product_id, cart["id"])
