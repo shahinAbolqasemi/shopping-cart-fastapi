@@ -24,6 +24,6 @@ services:
     volumes:
       - ./persistency/sqlite:/service/sqlite/
     ports:
-      - "8080:8080"
+      - "${SERVICE_PORT}:${SERVICE_PORT}"
     restart: unless-stopped
 
