@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends
-from app.dependencies import get_current_active_user, get_cart_items_by_username
+from fastapi import APIRouter, Depends, status
+
+from app.dependencies import get_current_active_user, get_cart_items_by_username, add_item_to_cart
 from app.models import User
 
 router = APIRouter()
@@ -15,9 +16,13 @@ async def cart_list_items(
     }
 
 
-@router.post("/")
+@router.post(
+    "/",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(add_item_to_cart)]
+)
 async def cart_add_item(user: User = Depends(get_current_active_user)):
-    return {"message": "Cart API Add"}
+    return {"result": "OK"}
 
 
 @router.delete("/")
