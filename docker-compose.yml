@@ -1,0 +1,29 @@
+version: "2.2"
+
+services:
+  cart:
+    build:
+      context: .
+    image: shopping-cart
+    container_name: shopping-cart
+    hostname: shopping-cart
+    environment:
+      - NUM_WORKERS
+      - RELOAD
+      - BACKLOG
+      - BIND_ADDRESS
+      - SERVICE_PORT
+      - LOG_LEVEL
+      - WORKER_TIMEOUT
+      - LOG_FILE
+      - SIMULTANEOUS_CLIENTS
+      - CART_PATH_PREFIX
+      - SECRET_KEY
+      - ALGORITHM
+      - ACCESS_TOKEN_EXPIRE_MINUTES
+    volumes:
+      - ./persistency/sqlite:/service/sqlite/
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
