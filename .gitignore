@@ -129,7 +129,7 @@ dmypy.json
 .pyre/
 
 # local files
-/sqlite/
+/sqlite/db.sqlite3
 
 # pycharm
 .idea
