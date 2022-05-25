@@ -1,9 +1,9 @@
 import aiohttp
-from fastapi import status, Depends, HTTPException
+from fastapi import status, Depends, HTTPException, Path
 from jose import jwt, JWTError
 
 from app.config import get_settings
-from app.db import get_user, get_cart_item, add_to_cart, get_cart_by_username
+from app.db import get_user, get_cart_item, add_to_cart, get_cart_by_username, remove_from_cart
 from app.models import TokenData, User, CartItem
 from app.security.security import oauth2_scheme
 
@@ -60,3 +60,11 @@ async def get_cart(user: User = Depends(get_current_active_user)):
 
 async def add_item_to_cart(product_id: CartItem, cart: dict = Depends(get_cart)):
     add_to_cart(product_id.product_id, cart["id"])
+
+
+async def delete_item_from_cart(product_id: int = Path(...), cart: dict = Depends(get_cart)):
+    if not remove_from_cart(product_id, cart["id"]):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="The product is not in the cart"
+        )

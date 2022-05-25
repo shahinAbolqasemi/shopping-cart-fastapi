@@ -83,5 +83,25 @@ def add_to_cart(product_id, cart_id):
     connection.close()
 
 
+def remove_from_cart(product_id, cart_id):
+    connection = sqlite3.connect(ROOT_DIR / 'sqlite' / 'db.sqlite3')
+    cursor = connection.cursor()
+    cursor.execute("""
+        SELECT id FROM product_cart
+        WHERE product_id = ? AND cart_id = ?
+    """, (product_id, cart_id))
+    existing_items = list(cursor.fetchall())
+    if existing_items:
+        cursor.execute("""
+            DELETE FROM product_cart
+            WHERE product_id = ?
+            AND cart_id = ?
+            AND id = ?
+        """, (product_id, cart_id, existing_items[-1][0]))
+    connection.commit()
+    connection.close()
+    return existing_items
+
+
 if __name__ == '__main__':
     init_db()

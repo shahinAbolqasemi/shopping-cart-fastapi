@@ -1,6 +1,11 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Path
 
-from app.dependencies import get_current_active_user, get_cart_items_by_username, add_item_to_cart
+from app.dependencies import (
+    get_current_active_user,
+    get_cart_items_by_username,
+    add_item_to_cart,
+    delete_item_from_cart
+)
 from app.models import User
 
 router = APIRouter()
@@ -30,9 +35,13 @@ async def cart_delete(user: User = Depends(get_current_active_user)):
     return {"message": "Cart API Delete"}
 
 
-@router.delete("/{id}")
-async def cart_delete_item(cart_id: int, user: User = Depends(get_current_active_user)):
-    return {"message": "Cart API Delete Item"}
+@router.delete(
+    "/{product_id}",
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(delete_item_from_cart)]
+)
+async def cart_delete_item(product_id: int = Path(...), user: User = Depends(get_current_active_user)):
+    return {"result": "OK"}
 
 
 @router.put("/")
