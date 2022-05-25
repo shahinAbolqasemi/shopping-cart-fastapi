@@ -13,7 +13,7 @@ def init_db():
     else:
         connection = sqlite3.connect(str(ROOT_DIR / 'sqlite' / 'db.sqlite3'))
         cursor = connection.cursor()
-        with open(ROOT_DIR / 'sqlite' / 'schema.sql', 'r') as f:
+        with open(ROOT_DIR / 'schema.sql', 'r') as f:
             cursor.executescript(f.read())
         connection.commit()
         connection.close()
