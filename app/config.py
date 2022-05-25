@@ -2,6 +2,10 @@ from pydantic import BaseSettings
 from typing import Optional
 from functools import lru_cache
 from pathlib import Path
+import pathlib
+import os
+
+ROOT_DIR = pathlib.Path(os.path.abspath(__file__)).parent.parent
 
 
 @lru_cache
