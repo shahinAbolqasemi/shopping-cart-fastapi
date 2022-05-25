@@ -45,19 +45,20 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
 
 async def get_cart_items_by_username(user: User = Depends(get_current_active_user)):
     cart_items_id = get_cart_item(user.username)
+    cart_items = []
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(
-                "https://fakestoreapi.com/products"
-        ) as response:
-            results = await response.json()
-            cart_items = []
-            for item_id, quantity in cart_items_id:
-                for product in results:
-                    if item_id == product["id"]:
-                        product["quantity"] = quantity
-                        cart_items.append(product)
-                        break
+    if cart_items_id:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                    "https://fakestoreapi.com/products"
+            ) as response:
+                results = await response.json()
+                for item_id, quantity in cart_items_id:
+                    for product in results:
+                        if item_id == product["id"]:
+                            product["quantity"] = quantity
+                            cart_items.append(product)
+                            break
     return cart_items
 
 
