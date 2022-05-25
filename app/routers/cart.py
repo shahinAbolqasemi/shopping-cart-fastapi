@@ -13,22 +13,16 @@ router = APIRouter()
 
 
 @router.get("/")
-async def cart_list_items(
-        cart_items: list = Depends(get_cart_items_by_username)
-):
+async def cart_list_items(cart_items: list = Depends(get_cart_items_by_username)):
     return {
         "result": "OK",
         "response": cart_items
     }
 
 
-@router.post(
-    "/",
-    status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(add_item_to_cart)]
-)
-async def cart_add_item(user: User = Depends(get_current_active_user)):
-    return {"result": "OK"}
+@router.post("/", status_code=status.HTTP_201_CREATED)
+async def cart_add_item(user: User = Depends(get_current_active_user), product: dict = Depends(add_item_to_cart)):
+    return {"result": "OK", "response": product}
 
 
 @router.delete(
@@ -46,14 +40,14 @@ async def cart_delete_all_items(user: User = Depends(get_current_active_user)):
     dependencies=[Depends(delete_item_from_cart)]
 )
 async def cart_delete_item(product_id: int = Path(...), user: User = Depends(get_current_active_user)):
-    return {"result": "OK"}
+    return {"result": "OK", "response": f"Item {product_id} deleted"}
 
 
 @router.put("/")
 async def cart_update(user: User = Depends(get_current_active_user)):
-    return {"message": "Cart API Update Whole Cart"}
+    return {"result": "OK", "message": "Cart API Update Whole Cart. Not implemented yet"}
 
 
 @router.patch("/")
 async def cart_partial_update(user: User = Depends(get_current_active_user)):
-    return {"message": "Cart API Update"}
+    return {"result": "OK", "message": "Cart API Update. Not implemented yet"}
