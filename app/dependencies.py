@@ -68,7 +68,7 @@ async def get_cart(user: User = Depends(get_current_active_user)):
 async def add_item_to_cart(product_id: CartItem, cart: dict = Depends(get_cart)):
     async with aiohttp.ClientSession() as session:
         async with session.get(
-                f"https://fakestoreapi.com/products/{product_id}"
+                f"https://fakestoreapi.com/products/{product_id.product_id}"
         ) as response:
             response.raise_for_status()
             product = await response.json()
