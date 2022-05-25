@@ -27,7 +27,6 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup():
     logger.info("Starting up application")
-    init_db()
 
 
 @app.get("/")
@@ -40,5 +39,10 @@ app.include_router(users_router)
 
 if __name__ == '__main__':
     import uvicorn
+    import sys
 
-    uvicorn.run('main:app', host='0.0.0.0', port=8080, reload=True)
+    arg = sys.argv[1:]
+    if arg[0] in ['run', 'start']:
+        uvicorn.run('main:app', host='0.0.0.0', port=8080, reload=True)
+    elif arg[0] in ['init']:
+        init_db()
