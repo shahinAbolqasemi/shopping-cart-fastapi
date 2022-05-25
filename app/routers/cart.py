@@ -4,7 +4,8 @@ from app.dependencies import (
     get_current_active_user,
     get_cart_items_by_username,
     add_item_to_cart,
-    delete_item_from_cart
+    delete_item_from_cart,
+    delete_cart_items,
 )
 from app.models import User
 
@@ -30,9 +31,13 @@ async def cart_add_item(user: User = Depends(get_current_active_user)):
     return {"result": "OK"}
 
 
-@router.delete("/")
-async def cart_delete(user: User = Depends(get_current_active_user)):
-    return {"message": "Cart API Delete"}
+@router.delete(
+    "/",
+    status_code=status.HTTP_200_OK,
+    dependencies=[Depends(delete_cart_items)]
+)
+async def cart_delete_all_items(user: User = Depends(get_current_active_user)):
+    return {"result": "OK", "response": "All items deleted"}
 
 
 @router.delete(

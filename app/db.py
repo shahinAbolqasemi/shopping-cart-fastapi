@@ -1,8 +1,8 @@
 import sqlite3
 
+from app.config import ROOT_DIR
 from app.models import UserInDB
 from app.utils import get_logger
-from app.config import ROOT_DIR
 
 logger = get_logger(__name__)
 
@@ -11,7 +11,7 @@ def init_db():
     if (ROOT_DIR / 'sqlite' / 'db.sqlite3').exists():
         logger.info("Database already exists")
     else:
-        connection = sqlite3.connect(str(ROOT_DIR / 'sqlite' / 'db.sqlite3'))
+        connection = sqlite3.connect(ROOT_DIR / 'sqlite' / 'db.sqlite3')
         cursor = connection.cursor()
         with open(ROOT_DIR / 'schema.sql', 'r') as f:
             cursor.executescript(f.read())
@@ -103,5 +103,19 @@ def remove_from_cart(product_id, cart_id):
     return existing_items
 
 
-if __name__ == '__main__':
-    init_db()
+def remove_cart_items(cart_id):
+    connection = sqlite3.connect(ROOT_DIR / 'sqlite' / 'db.sqlite3')
+    cursor = connection.cursor()
+    cursor.execute("""
+            SELECT id FROM product_cart
+            WHERE cart_id = ?
+        """, (cart_id,))
+    existing_items = list(cursor.fetchall())
+    if existing_items:
+        cursor.execute("""
+            DELETE FROM product_cart
+            WHERE cart_id = ?
+        """, (cart_id,))
+    connection.commit()
+    connection.close()
+    return existing_items
